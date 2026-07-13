@@ -1,0 +1,570 @@
+ <!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>SmartPDV Profissional PDV</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topo">
+
+    <img id="logoTopo"
+         src=""
+         style="width:40px;height:40px;border-radius:8px;margin-right:10px;display:none;">
+
+    <b id="tituloSistema">SmartPdv Profissional PDV</b>
+
+    <span id="hora"></span>
+
+</div>
+
+<div class="container">
+
+ <div class="menu">
+  <button onclick="abrirProdutos()">Produtos / Estoque</button>
+  <button onclick="abrirClientes()">Clientes</button>
+  <button onclick="abrirFiado()">Fiado</button>
+  <button onclick="abrirAvulso()">Venda Avulsa</button>
+  <button onclick="abrirCaixa()">Abrir Caixa</button>
+  <button onclick="fecharCaixa()">Fechar Caixa</button>
+  <button onclick="fazerSangria()">Sangria</button>
+<button onclick="abrirRelatorioVendas()">📊 Relatório de Vendas</button>
+  <button onclick="abrirConfiguracoes()">⚙️ Configurações</button>
+  <button onclick="cancelarItemVenda()">Cancelar Item</button>
+  <button onclick="cancelarUltimaVenda()">Cancelar Última Venda</button>
+  <button onclick="fazerBackup()">Backup</button>
+  <button onclick="importarBackup()">Importar Backup</button>
+<button onclick="abrirConsultaPreco()">
+🔍 Consulta de Preço
+</button>
+ </div>
+
+ <div class="conteudo">
+
+  <div class="cards">
+   <div class="card">Produtos<br><b id="cProd">0</b></div>
+   <div class="card">Itens<br><b id="cItens">0</b></div>
+   <div class="card">Total<br><b id="cTotal">0.00</b></div>
+   <div class="card">Vendas<br><b id="cVenda">0</b></div>
+   <div class="card">Fiado<br><b id="cFiado">0</b></div>
+  </div>
+
+  <input id="busca" placeholder="Código | 30*1 | valor" autofocus>
+
+  <div id="gridProdutos" class="grid"></div>
+
+  <table>
+   <thead>
+    <tr>
+     <th>Img</th>
+     <th>Cód</th>
+     <th>Produto</th>
+     <th>Qtd</th>
+     <th>Total</th>
+     <th></th>
+    </tr>
+   </thead>
+   <tbody id="lista"></tbody>
+  </table>
+
+  <div class="total">R$ <span id="total">0.00</span></div>
+  <div id="ultimaVenda">Última venda: Nenhuma</div>
+
+ </div>
+
+ <div class="pagamento">
+  <h2>💳 Pagamento</h2>
+
+  <button onclick="setForma('Dinheiro')">F1 Dinheiro</button>
+  <button onclick="setForma('Pix')">F2 Pix</button>
+  <button onclick="setForma('Cartão')">F3 Cartão</button>
+  <button onclick="setForma('Fiado')">F4 Fiado</button>
+<button onclick="pesarProduto()">⚖️ F8 Pesar Produto</button>
+
+  <h1>R$ <span id="totalPagamento">0.00</span></h1>
+
+  <input id="valorPago" placeholder="Valor recebido">
+
+  <h2>Troco: R$ <span id="troco">0.00</span></h2>
+
+ <button class="btnFinalizar" onclick="finalizarVenda()">
+ Enter Finalizar Venda
+</button>
+ </div>
+
+</div>
+
+<!-- PRODUTOS -->
+<div class="modal" id="mProdutos">
+ <div class="box">
+  <h2>Cadastro Produto</h2>
+
+  <input id="nome" placeholder="Nome">
+  <input id="codigo" placeholder="Código">
+  <input id="preco" placeholder="Preço"><label>
+    <input type="checkbox" id="produtoPorPeso">
+    ⚖️ Produto vendido por Kg
+</label>
+
+<br><br>
+  <input id="estoque" placeholder="Estoque">
+  <input id="img" placeholder="Imagem URL">
+
+  <button onclick="salvarProduto()">Salvar</button>
+
+  <hr>
+  <div id="listaProdutos"></div>
+
+  <button onclick="fechar('mProdutos')">Fechar</button>
+ </div>
+</div>
+
+<!-- CLIENTES -->
+<div class="modal" id="mClientes">
+ <div class="box">
+  <h2>Clientes</h2>
+
+  <input id="clienteNome" placeholder="Nome">
+  <input id="clienteTelefone" placeholder="Telefone">
+  <input id="clienteEndereco" placeholder="Endereço">
+
+  <button onclick="salvarCliente()">Salvar Cliente</button>
+
+  <hr>
+  <div id="listaClientes"></div>
+
+  <button onclick="fechar('mClientes')">Fechar</button>
+ </div>
+</div>
+
+<!-- FIADO -->
+<div class="modal" id="mFiado">
+ <div class="box">
+  <h2>Fiado</h2>
+  <div id="listaFiado"></div>
+  <button onclick="fechar('mFiado')">Fechar</button>
+ </div>
+</div>
+
+<!-- AVULSO -->
+<div class="modal" id="mAvulso">
+ <div class="box">
+  <h2>Venda Avulsa</h2>
+  <input id="valorAvulso" placeholder="Valor">
+  <button onclick="confirmarAvulso()">Confirmar</button>
+  <button onclick="fechar('mAvulso')">Fechar</button>
+ </div>
+</div>
+
+<!-- CANCELAR ITEM -->
+<div class="modal" id="mCancelarItem">
+ <div class="box">
+  <h2>Cancelar item da venda</h2>
+  <div id="listaCancelarItem"></div>
+  <button onclick="fechar('mCancelarItem')">Fechar</button>
+ </div>
+</div>
+
+<!-- FECHAMENTO -->
+<div class="modal" id="mFechamento">
+ <div class="box fechamentoBox">
+  <pre id="textoFechamento"></pre>
+
+  <button onclick="imprimirFechamento()">Imprimir</button>
+  <button onclick="confirmarZerarCaixa()">Zerar Caixa</button>
+  <button onclick="fechar('mFechamento')">Fechar</button>
+
+ </div>
+</div>
+
+<!-- CONFIGURAÇÕES -->
+<div class="modal" id="mConfiguracoes">
+<div class="box">
+
+<h2>⚙️ Configurações do SmartPDV</h2>
+
+<button onclick="abrirEmpresa()">
+🏢 Empresa
+</button>
+
+<button onclick="abrirUsuarios()">
+👤 Usuários
+</button>
+
+<button onclick="abrirBalanca()">
+⚖️ Balança
+</button>
+
+<button onclick="abrirImpressora()">
+🖨️ Impressora
+</button>
+
+<button onclick="abrirBackup()">
+💾 Backup
+</button>
+
+<br><br>
+
+<button onclick="fechar('mConfiguracoes')">
+Fechar
+</button>
+
+ </div>
+</div>
+
+<!-- EMPRESA -->
+<div class="modal" id="mEmpresa">
+
+<div class="box">
+
+<h2>🏢 Dados da Empresa</h2>
+
+<input id="empresaNome" placeholder="Nome da empresa">
+
+<input id="empresaFantasia" placeholder="Nome fantasia">
+
+<input id="empresaCnpj" placeholder="CNPJ">
+
+<input id="empresaTelefone" placeholder="Telefone">
+
+<input id="empresaEndereco" placeholder="Endereço">
+
+<input id="empresaCidade" placeholder="Cidade">
+
+<input id="empresaEstado" placeholder="Estado">
+<h3>⚖️ Configuração da Balança</h3>
+
+<label>
+<input type="checkbox" id="usarBalanca">
+ Usar balança
+</label>
+
+<br><br>
+
+Modelo:
+<select id="modeloBalanca">
+    <option>Automático</option>
+    <option>Toledo</option>
+    <option>Filizola</option>
+    <option>Urano</option>
+    <option>Elgin</option>
+</select>
+
+<br><br>
+
+Porta:
+<select id="portaBalanca">
+    <option>Automática</option>
+</select>
+
+<br><br>
+
+Velocidade:
+<select id="velocidadeBalanca">
+    <option>Automática</option>
+    <option>9600</option>
+    <option>19200</option>
+    <option>38400</option>
+</select>
+
+<br><br>
+
+<button onclick="procurarBalanca()">
+🔍 Procurar Balança
+</button>
+
+<br><br>
+
+<div id="statusBalanca">
+Nenhuma balança encontrada.
+</div>
+
+<button onclick="salvarEmpresa()">
+💾 Salvar Dados
+</button>
+
+<button onclick="fechar('mEmpresa')">
+Fechar
+</button>
+
+</div>
+
+</div>
+<!-- BALANÇA -->
+<div class="modal" id="mBalanca">
+  <div class="box">
+
+    <h2>⚖️ Configuração da Balança</h2>
+
+    <label>Modelo</label>
+    <select id="balancaModelo">
+      <option>Filizola</option>
+      <option>Toledo</option>
+      <option>Urano</option>
+      <option>Outra</option>
+    </select>
+
+    <label>Tipo de Conexão</label>
+    <select id="balancaConexao">
+      <option>USB</option>
+      <option>Serial (COM)</option>
+      <option>Rede TCP/IP</option>
+    </select>
+
+    <label>Porta COM</label>
+    <select id="balancaCom">
+      <option>COM1</option>
+      <option>COM2</option>
+      <option>COM3</option>
+      <option>COM4</option>
+      <option>COM5</option>
+      <option>COM6</option>
+    </select>
+
+    <label>Velocidade</label>
+    <select id="balancaBaud">
+      <option>9600</option>
+      <option>19200</option>
+      <option>38400</option>
+      <option>115200</option>
+    </select>
+
+    <button onclick="salvarBalanca()">
+      💾 Salvar Configuração
+    </button>
+
+    <button onclick="fechar('mBalanca')">
+      Fechar
+    </button>
+
+  </div>
+</div>
+<!-- RELATÓRIO DE VENDAS -->
+<div class="modal" id="mRelatorio">
+
+<div class="box">
+
+<h2>📊 Relatório de Vendas</h2>
+
+<label>Pesquisar por data</label>
+
+<label>Data Inicial</label>
+<input type="date" id="dataInicial">
+
+<label>Data Final</label>
+<input type="date" id="dataFinal">
+
+<button onclick="pesquisarVendas()">
+🔍 Pesquisar
+</button>
+<button onclick="imprimirRelatorio()">
+🖨️ Imprimir Relatório
+</button>
+
+<hr>
+
+<div id="listaRelatorio">
+
+Nenhuma venda encontrada.
+
+</div>
+
+<br>
+
+<button onclick="fechar('mRelatorio')">
+Fechar
+</button>
+
+</div>
+
+</div>
+
+<!-- DETALHES DA VENDA -->
+<div class="modal" id="mVerVenda">
+
+<div class="box">
+
+<h2>🧾 Detalhes da Venda</h2>
+
+<div id="conteudoVenda"></div>
+
+<br>
+
+<button onclick="reimprimirVenda()">
+🖨️ Reimprimir
+</button>
+
+<button onclick="fechar('mVerVenda')">
+Fechar
+</button>
+
+</div>
+
+</div>
+
+<!-- CONSULTA DE PREÇO -->
+<div class="modal" id="mConsultaPreco">
+  <div class="box">
+
+    <h2>🔍 Consulta de Preço</h2>
+
+    <input id="codigoConsulta"
+           placeholder="Passe o código de barras ou digite o código"
+           autofocus>
+
+    <button onclick="consultarPreco()">
+      Consultar
+    </button>
+
+    <hr>
+
+    <div id="resultadoConsulta">
+
+      Nenhum produto consultado.
+
+    </div>
+
+    <button onclick="fechar('mConsultaPreco')">
+      Fechar
+    </button>
+
+  </div>
+</div>
+
+<!-- PRIMEIRA INSTALAÇÃO -->
+<div id="instalacaoTela" class="loginTela" style="display:none;">
+    <div class="loginBox">
+
+        <h2>🚀 Bem-vindo ao SmartPDV</h2>
+
+        <p>Vamos configurar seu sistema.</p>
+
+        <input id="instEmpresa" placeholder="Nome da Empresa">
+
+        <input id="instUsuario" placeholder="Usuário Administrador">
+
+        <input id="instSenha" type="password" placeholder="Senha">
+
+        <button onclick="concluirInstalacao()">
+            Concluir Instalação
+        </button>
+
+    </div>
+</div>
+
+<div class="modal" id="instalacaoEmpresa" style="display:none;">
+    <div class="box">
+
+        <h2>🏢 Etapa 2 de 4</h2>
+        <h3>Dados da Empresa</h3>
+
+        <input id="empresaNome2" placeholder="Nome da Empresa">
+        <input id="empresaFantasia2" placeholder="Nome Fantasia">
+        <input id="empresaCnpj2" placeholder="CNPJ">
+        <input id="empresaTelefone2" placeholder="Telefone">
+        <input id="empresaEndereco2" placeholder="Endereço">
+        <input id="empresaCidade2" placeholder="Cidade">
+        <input id="empresaEstado2" placeholder="Estado">
+
+        <button onclick="proximaEtapaEmpresa()">
+            ➜ Próxima Etapa
+        </button>
+
+    </div>
+</div>
+
+<div class="modal" id="instalacaoImpressora" style="display:none;">
+<div class="box">
+
+<h2>🖨️ Etapa 3 de 4</h2>
+
+<label>Modelo da Impressora</label>
+
+<select id="instImpressora">
+<option>58mm</option>
+<option selected>80mm</option>
+</select>
+
+<label>Balança</label>
+
+<select id="instBalanca">
+<option>Não utilizo</option>
+<option>Filizola</option>
+<option>Toledo</option>
+<option>Urano</option>
+</select>
+
+<label>Porta da Balança</label>
+
+<select id="instCom">
+<option>COM1</option>
+<option>COM2</option>
+<option>COM3</option>
+<option>COM4</option>
+<option>COM5</option>
+<option>COM6</option>
+</select>
+
+<button onclick="proximaEtapaImpressora()">
+➡️ Próxima Etapa
+</button>
+
+</div>
+</div>
+
+<!-- ETAPA 4 -->
+<div class="modal" id="instalacaoFinal" style="display:none;">
+    <div class="box">
+
+        <h2>🎉 Instalação Concluída</h2>
+
+        <p>O SmartPDV foi configurado com sucesso.</p>
+
+        <p>Agora você já pode começar a utilizar o sistema.</p>
+
+        <button onclick="finalizarInstalacao()">
+            🚀 Entrar no SmartPDV
+        </button>
+
+    </div>
+</div>
+
+<div class="modal" id="instalacaoPersonalizar" style="display:none;">
+<div class="box">
+
+<h2>🎨 Etapa 5 de 5</h2>
+
+<label>Cor do Sistema</label>
+
+<select id="corSistema">
+<option value="#2563eb">Azul</option>
+<option value="#16a34a">Verde</option>
+<option value="#9333ea">Roxo</option>
+<option value="#dc2626">Vermelho</option>
+<option value="#ea580c">Laranja</option>
+</select>
+
+<label>Logo da Empresa</label>
+
+<input type="file" id="logoEmpresa" accept="image/*">
+
+<button onclick="salvarPersonalizacao()">
+💾 Finalizar Instalação
+</button>
+
+</div>
+</div>
+<div id="loginTela" class="loginTela">
+ <div class="loginBox">
+  <h2>Login</h2>
+
+  <input id="usuario" placeholder="Usuário">
+  <input id="senha" type="password" placeholder="Senha">
+
+  <button onclick="fazerLogin()">Entrar</button>
+ </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
