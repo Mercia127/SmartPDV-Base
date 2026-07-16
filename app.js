@@ -1,4 +1,3 @@
-
 console.log("APP NOVO CARREGADO");
 let produtoPesoAtual = null;
 let vendaSelecionada = null;
@@ -822,7 +821,10 @@ console.log(Object.keys(fiado));
         <button onclick="receberFiado('${cliente}')">
         💰 Receber
         </button>
-
+<button onclick="excluirFiado('${cliente}')"
+style="background:#d32f2f;color:white;border:none;padding:8px 12px;border-radius:8px;margin-left:8px;cursor:pointer;">
+🗑️ Excluir
+</button>
         </div>
         `;
     });
@@ -889,6 +891,15 @@ function receberFiado(cliente){
  atualizar();
 
  alert("Pagamento registrado com sucesso!");
+}
+function excluirFiado(cliente){
+    if(!confirm("Deseja realmente excluir o fiado de " + cliente + "?")) return;
+
+    delete fiado[cliente];
+    salvarDados();
+    listarFiado();
+
+    alert("Fiado excluído com sucesso!");
 }
 function fazerBackup(){
  let dados = {
@@ -1575,4 +1586,62 @@ async function pesarProduto(){
     atualizar();
 
     produtoPesoAtual = null;
+}
+document.addEventListener("keydown", function(e){
+
+    if(e.key !== "Escape") return;
+
+    document.querySelectorAll(".modal").forEach(m=>{
+        m.style.display="none";
+    });
+
+});
+document.addEventListener("keydown", function(e){
+
+    if(e.key !== "Escape") return;
+
+    const telas = [
+        "mProdutos",
+        "mClientes",
+        "mFiado",
+        "mAvulso",
+        "mFechamento",
+        "mCancelarItem",
+        "mEntradaMercadoria"
+    ];
+
+    telas.forEach(id=>{
+        let tela = document.getElementById(id);
+        if(tela) tela.style.display = "none";
+    });
+
+});
+function consultarPreco(){
+
+    let codigo = document.getElementById("codigoConsulta").value.trim();
+
+    let produto = produtos.find(p =>
+    String(p.codigo) === codigo ||
+    p.nome.toLowerCase().includes(codigo.toLowerCase())
+);
+    let resultado = document.getElementById("resultadoConsulta");
+
+    if(!produto){
+        resultado.innerHTML = "<b style='color:red'>Produto não encontrado.</b>";
+        return;
+    }
+
+    resultado.innerHTML = `
+        <h3>${produto.nome}</h3>
+        <p><b>Código:</b> ${produto.codigo}</p>
+        <p style="font-size:28px;color:green;">
+            R$ ${Number(produto.preco).toFixed(2)}
+        </p>
+    `;
+}
+function abrirEntradaMercadoria(){
+    window.open("entrada.html", "_blank");
+}
+function abrirNotasEntrada(){
+    window.open("notasEntrada.html","_blank");
 }

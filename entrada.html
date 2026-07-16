@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Entrada de Mercadorias</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>📦 Entrada de Mercadorias</h2>
+
+<label>Fornecedor</label>
+<input type="text" id="fornecedor">
+
+<label>Nº da Nota Fiscal</label>
+<input type="text" id="numeroNota">
+
+<label>Data da Nota</label>
+<input type="date" id="dataNota">
+
+<label>Data da Entrada</label>
+<input type="date" id="dataEntrada">
+
+<label>Valor Total da Nota</label>
+<input type="number" step="0.01" id="valorNota">
+
+<label>Status do Pagamento</label>
+
+<select id="statusNota">
+<option value="PENDENTE">🟡 Pagamento Pendente</option>
+<option value="PAGA">🟢 Pagamento Realizado</option>
+</select>
+
+<label>Observações</label>
+
+<textarea id="obsNota"></textarea>
+
+<hr>
+
+<h3>Produtos da Nota</h3>
+
+<table width="100%" id="tabelaEntrada">
+
+<thead>
+
+<tr>
+
+<th>Código</th>
+<th>Produto</th>
+<th>Qtd</th>
+<th>Custo</th>
+<th>Margem %</th>
+<th>Venda Sugerida</th>
+<th></th>
+
+</tr>
+
+</thead>
+
+<tbody id="listaProdutosEntrada">
+
+</tbody>
+
+</table>
+
+<br>
+
+<button onclick="adicionarLinhaProduto()">
+➕ Adicionar Produto
+</button>
+
+<button onclick="salvarEntradaMercadoria()">
+💾 Salvar Entrada
+</button>
+
+</div>
+
+<script src="App Java/entrada.js"></script>
+</body>
+</html>
