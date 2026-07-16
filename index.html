@@ -140,11 +140,29 @@
 
 <!-- FIADO -->
 <div class="modal" id="mFiado">
- <div class="box">
-  <h2>Fiado</h2>
-  <div id="listaFiado"></div>
-  <button onclick="fechar('mFiado')">Fechar</button>
- </div>
+    <div class="box">
+
+        <h2>Fiado</h2>
+
+        <input
+            id="pesquisaFiado"
+            type="text"
+            placeholder="Pesquisar cliente..."
+            onkeyup="listarFiado()"
+            style="
+                width:100%;
+                padding:10px;
+                margin-bottom:10px;
+                border-radius:8px;
+                border:1px solid #ccc;
+                font-size:16px;
+            ">
+
+        <div id="listaFiado"></div>
+
+        <button onclick="fechar('mFiado')">Fechar</button>
+
+    </div>
 </div>
 
 <!-- AVULSO -->
