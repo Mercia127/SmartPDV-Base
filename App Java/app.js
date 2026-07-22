@@ -1180,12 +1180,22 @@ function abrirRelatorioVendas(){
 function pesquisarVendas(){
 
     let historico = JSON.parse(localStorage.getItem("hist")) || [];
-const hoje = new Date().toLocaleDateString("pt-BR");
+let dataPesquisa = document.getElementById("dataInicial").value;
+
+if (!dataPesquisa) {
+    alert("Selecione uma data.");
+    return;
+}
 
 historico = historico.filter(venda => {
-    return new Date(venda.data).toLocaleDateString("pt-BR") === hoje;
-});
 
+    let dataVenda = new Date(venda.data)
+        .toISOString()
+        .split("T")[0];
+
+    return dataVenda === dataPesquisa;
+
+});
     let lista = document.getElementById("listaRelatorio");
 
     if(historico.length == 0){
