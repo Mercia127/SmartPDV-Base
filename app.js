@@ -1,4 +1,5 @@
 console.log("APP NOVO CARREGADO");
+let vendasFiltradas = [];
 let produtoPesoAtual = null;
 let vendaSelecionada = null;
 let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
@@ -1234,6 +1235,7 @@ Forma: ${venda.forma || ""}<br><br>
 `;
     });
 
+vendasFiltradas = historico;
     lista.innerHTML = html;
 
 }
@@ -1296,19 +1298,29 @@ function reimprimirVenda(){
 }
 function imprimirRelatorio(){
 
-    let historico = JSON.parse(localStorage.getItem("hist")) || [];
+    if(vendasFiltradas.length === 0){
+        alert("Pesquise as vendas antes de imprimir o relatório.");
+        return;
+    }
 
-    let total = historico.reduce((s,v)=>s+Number(v.total||0),0);
-    let qtd = historico.length;
-    let ticket = qtd ? (total/qtd).toFixed(2) : "0.00";
+    let total = vendasFiltradas.reduce((s,v)=>s + Number(v.total || 0),0);
+
+    let qtd = vendasFiltradas.length;
+
+    let ticket = qtd ? (total / qtd).toFixed(2) : "0.00";
+
+    let dataRelatorio = new Date(vendasFiltradas[0].data)
+        .toLocaleDateString("pt-BR");
 
     let texto = "";
 
     texto += "SMARTPDV\n";
     texto += "RELATÓRIO DE VENDAS\n\n";
 
+    texto += "Data: " + dataRelatorio + "\n\n";
+
     texto += "Total vendido: R$ " + total.toFixed(2) + "\n";
-    texto += "Número de vendas: " + qtd + "\n";
+    texto += "Quantidade de vendas: " + qtd + "\n";
     texto += "Ticket médio: R$ " + ticket + "\n\n";
 
     texto += "Emitido em:\n";
@@ -1316,7 +1328,9 @@ function imprimirRelatorio(){
 
     let w = window.open("", "", "width=300,height=600");
 
-    w.document.write("<pre>"+texto+"</pre>");
+    w.document.write("<pre style='font-family:monospace;font-size:14px;'>" + texto + "</pre>");
+
+    w.document.close();
 
     w.print();
 
